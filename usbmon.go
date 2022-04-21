@@ -2,16 +2,6 @@ package usbmon
 
 import (
 	"context"
-
-	"github.com/jochenvg/go-udev"
-)
-
-type ActionFilter string
-
-const (
-	Add    ActionFilter = "add"
-	Remove ActionFilter = "remove"
-	All    ActionFilter = "all"
 )
 
 type Device struct {
@@ -30,6 +20,10 @@ func (d *Device) Vendor() string {
 	return d.properties["ID_VENDOR"]
 }
 
+func (d *Device) Action() string {
+	return d.properties["ACTION"]
+}
+
 func (d *Device) Major() string {
 	return d.properties["MAJOR"]
 }
@@ -43,15 +37,11 @@ func (d *Device) Path() string {
 }
 
 func Listen(ctx context.Context) (chan *Device, error) {
-	return ListenFiltered(ctx, All)
+	return ListenFiltered(ctx)
 }
 
-func ListenFiltered(ctx context.Context, filter ActionFilter) (chan *Device, error) {
-	u := udev.Udev{}
-	m := u.NewMonitorFromNetlink("udev")
-	m.FilterAddMatchTag("seat")
-	m.FilterAddMatchSubsystem("usb")
-
+func ListenFiltered(ctx context.Context, filters ...Filter) (chan *Device, error) {
+	m := NewUdevMonitor()
 	devchan := make(chan *Device)
 	ch, err := m.DeviceChan(ctx)
 	if err != nil {
@@ -66,18 +56,19 @@ func ListenFiltered(ctx context.Context, filter ActionFilter) (chan *Device, err
 				return
 			case d := <-ch:
 				dev := &Device{
-					properties: map[string]string{},
+					properties: d.Properties(),
 				}
-				dev.properties = d.Properties()
 
-				action := ActionFilter(d.Properties()["ACTION"])
-				if filter == All && (action == Add || action == Remove) {
+				if filters == nil {
 					devchan <- dev
 					continue
 				}
 
-				if action == filter {
-					devchan <- dev
+				for _, f := range filters {
+					if f.Matches(dev) {
+						devchan <- dev
+						break
+					}
 				}
 			}
 		}
