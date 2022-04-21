@@ -40,6 +40,12 @@ func Listen(ctx context.Context) (chan *Device, error) {
 	return ListenFiltered(ctx)
 }
 
+// ListenFiltered returns the usb storage devices that match all the filters passed
+// as arguments.
+//
+// Filters are additive, meaning every device needs to match all the filter arguments.
+//
+// Example:
 func ListenFiltered(ctx context.Context, filters ...Filter) (chan *Device, error) {
 	m := NewUdevMonitor()
 	devchan := make(chan *Device)
@@ -64,11 +70,16 @@ func ListenFiltered(ctx context.Context, filters ...Filter) (chan *Device, error
 					continue
 				}
 
+				match := true
 				for _, f := range filters {
-					if f.Matches(dev) {
-						devchan <- dev
+					if !f.Matches(dev) {
+						match = false
 						break
 					}
+				}
+
+				if match {
+					devchan <- dev
 				}
 			}
 		}
