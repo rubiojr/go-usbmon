@@ -35,3 +35,11 @@ func (f *SerialFilter) Matches(dev *Device) bool {
 
 	return f.Serial == dev.Serial() && (action == ActionAdd || action == ActionRemove)
 }
+
+type PartitionFilter struct {
+	Serial string
+}
+
+func (f *PartitionFilter) Matches(dev *Device) bool {
+	return dev.Properties()["DEVICETYPE"] == "partition"
+}

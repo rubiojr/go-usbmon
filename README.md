@@ -14,19 +14,19 @@ import (
 )
 
 func main() {
-	ctx, cancel := context.WithCancel(context.Background())
-	// Print device properties when plugged in
-	devs, err := usbmon.ListenFiltered(ctx, usbmon.Add) // use usbmon.Listen to monitor both addition/removals
+	// Print device properties when plugged in or unplugged
+	filter := &usbmon.ActionFilter{Action: usbmon.ActionAll}
+	devs, err := usbmon.ListenFiltered(context.Background(), filter)
 	if err != nil {
 		panic(err)
 	}
 
 	for dev := range devs {
-		fmt.Println(dev.Serial())
-		fmt.Println(dev.Path())
-		fmt.Println(dev.Vendor())
+		fmt.Printf("-- Device %s\n", dev.Action())
+		fmt.Println("Serial: " + dev.Serial())
+		fmt.Println("Path: " + dev.Path())
+		fmt.Println("Vendor: " + dev.Vendor())
 	}
-	cancel()
 }
 ```
 
