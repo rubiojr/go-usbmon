@@ -1,0 +1,31 @@
+name: build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        go-version: [~1.17]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      GO111MODULE: "on"
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install deps
+        run: sudo apt update && sudo apt install build-essential libudev-dev
+
+      - name: Test
+        run: go test
