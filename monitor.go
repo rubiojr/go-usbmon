@@ -21,8 +21,8 @@ func (m *UdevMonitor) DeviceChan(ctx context.Context) (<-chan *udev.Device, erro
 func NewUdevMonitor() *UdevMonitor {
 	u := udev.Udev{}
 	m := u.NewMonitorFromNetlink("udev")
-	m.FilterAddMatchTag("seat")
-	m.FilterAddMatchSubsystem("usb")
+	_ = m.FilterAddMatchTag("seat")
+	_ = m.FilterAddMatchSubsystem("usb")
 
 	return &UdevMonitor{monitor: m}
 }
