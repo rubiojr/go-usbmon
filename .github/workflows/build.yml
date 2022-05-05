@@ -24,5 +24,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Install deps
+        run: sudo apt update && sudo apt install build-essential libudev-dev
+
       - name: Test
         run: go test
