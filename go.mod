@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/jochenvg/go-udev v0.0.0-20171110120927-d6b62d56d37b
-	github.com/stretchr/testify v1.7.4
+	github.com/stretchr/testify v1.7.5
 )
 
 require (
