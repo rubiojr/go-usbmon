@@ -14,7 +14,7 @@ type UdevMonitor struct {
 	monitor *udev.Monitor
 }
 
-func (m *UdevMonitor) DeviceChan(ctx context.Context) (<-chan *udev.Device, error) {
+func (m *UdevMonitor) DeviceChan(ctx context.Context) (<-chan *udev.Device, <-chan error, error) {
 	return m.monitor.DeviceChan(ctx)
 }
 

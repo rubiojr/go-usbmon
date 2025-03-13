@@ -3,7 +3,7 @@ module github.com/rubiojr/go-usbmon
 go 1.18
 
 require (
-	github.com/jochenvg/go-udev v0.0.0-20171110120927-d6b62d56d37b
+	github.com/jochenvg/go-udev v0.0.0-20240801134859-b65ed646224b
 	github.com/stretchr/testify v1.10.0
 )
 

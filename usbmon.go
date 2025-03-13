@@ -49,17 +49,21 @@ func Listen(ctx context.Context) (chan *Device, error) {
 func ListenFiltered(ctx context.Context, filters ...Filter) (chan *Device, error) {
 	m := NewUdevMonitor()
 	devchan := make(chan *Device)
-	ch, err := m.DeviceChan(ctx)
+	ch, ech, err := m.DeviceChan(ctx)
 	if err != nil {
 		return nil, err
 	}
 
+	var lerr error
 	go func() {
+	Loop:
 		for {
 			select {
 			case <-ctx.Done():
 				close(devchan)
 				return
+			case lerr = <-ech:
+				break Loop
 			case d := <-ch:
 				dev := &Device{
 					properties: d.Properties(),
@@ -85,5 +89,5 @@ func ListenFiltered(ctx context.Context, filters ...Filter) (chan *Device, error
 		}
 	}()
 
-	return devchan, nil
+	return devchan, lerr
 }
