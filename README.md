@@ -39,7 +39,9 @@ func main() {
 * libudev
 
 Ubuntu/Debian: `apt install libudev-dev`
+
 Fedora/RHEL: `dnf install systemd-devel`
+
 Arch Linux: `pacman -S systemd-libs`
 
 ## Additional examples
