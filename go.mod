@@ -4,7 +4,7 @@ go 1.22
 
 require (
 	github.com/jochenvg/go-udev v0.0.0-20240801134859-b65ed646224b
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.0
 )
 
 require (
