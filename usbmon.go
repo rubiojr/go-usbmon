@@ -2,6 +2,7 @@ package usbmon
 
 import (
 	"context"
+	"strings"
 )
 
 type Device struct {
