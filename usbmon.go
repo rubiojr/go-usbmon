@@ -2,6 +2,7 @@ package usbmon
 
 import (
 	"context"
+	"strings"
 )
 
 type Device struct {
@@ -34,6 +35,24 @@ func (d *Device) Minor() string {
 
 func (d *Device) Path() string {
 	return d.properties["DEVPATH"]
+}
+
+func (d *Device) VendorID() string {
+	product := d.properties["PRODUCT"]
+	parts := strings.Split(product, "/")
+	if len(parts) < 2 {
+		return ""
+	}
+	return parts[0]
+}
+
+func (d *Device) ProductID() string {
+	product := d.properties["PRODUCT"]
+	parts := strings.Split(product, "/")
+	if len(parts) < 2 {
+		return ""
+	}
+	return parts[1]
 }
 
 func Listen(ctx context.Context) (chan *Device, error) {
